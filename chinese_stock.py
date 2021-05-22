@@ -1,7 +1,9 @@
-import cloud_clearance as cc
 import requests
-import pandas as pd
 import json
+
+import cloud_clearer as cc
+import pandas as pd
+
 from datetime import date
 
 def get_stock_indice(code, start = '19910101', end='20210101'):
