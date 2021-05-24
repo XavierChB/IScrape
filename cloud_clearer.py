@@ -90,9 +90,9 @@ def get_cf_clearance(force_reload=False):
                 or test_clearance(res_dict.get('value'))):
 
             res = res_dict.get('value')
-            if debug:
-                print("Cloudflare密钥在有效时间内，直接输出:")
-                print(res)
+            # if debug:
+                # print("Cloudflare密钥在有效时间内，直接输出:")
+                # print(res)
             return res
 
     # If not, use undetected_chromedriver to obtain
