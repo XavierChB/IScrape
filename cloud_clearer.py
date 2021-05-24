@@ -86,7 +86,7 @@ def get_cf_clearance(force_reload=False):
     # If last cf_clearance was obtained 50 minuts ago // test 36000
     if res_dict != None and not force_reload:
         if ((res_dict.get('last_verified') != None
-                and datetime.now().timestamp() - res_dict.get('last_verified') < 10)
+                and datetime.now().timestamp() - res_dict.get('last_verified') < 30)
                 or test_clearance(res_dict.get('value'))):
 
             res = res_dict.get('value')

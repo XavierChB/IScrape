@@ -5,19 +5,36 @@ import cloud_clearer as cc
 
 from random import randint
 from color_print import cprint
+from constant import chrome_user_agent
+from datetime import date
 
-def get_index_historical_data_response(code, st_date='2020/01/01', end_date='2021/01/01'):
+def get_symbol_historical_data_response(code, data_type='indices', st_date='2020/01/01', end_date=date.today().strftime('%Y/%m/%d')):
     assert isinstance(code, str)
-    row_df = sr.get_index_row(code)
-    assert isinstance(row_df, pd.core.frame.DataFrame)
-    if row_df.empty:
-        return None
 
-    id_ = int(row_df["id"].values[0])
+    if 'cid' in code:
+        code_split_list = code.split('?', 1)
+        item = code_split_list[0]
+        cid_str = code_split_list[1]
+        id_ = cid_str.split('=', 1)[1]
+        referer = '/'.join(('https://cn.investing.com', data_type, item + '-historical-data' + cid_str))
+    elif data_type != "stocks" and data_type != "indices":
+        row_df = sr.get_tag_row(code, data_type=data_type)
+        assert isinstance(row_df, pd.core.frame.DataFrame)
+        if row_df.empty:
+            return None
+        id_ = row_df['id'].values[0]
+        referer = '/'.join(('https://cn.investing.com', data_type, code + '-historical_data'))
+    else:
+        row_df = sr.get_symbol_row(code, data_type=data_type)
+        assert isinstance(row_df, pd.core.frame.DataFrame)
+        if row_df.empty:
+            return None
+        id_ = row_df['id'].values[0]
+        referer = '/'.join(('https://cn.investing.com', data_type, row_df['tag'].values[0] + '-historical_data'))
 
     head = {
         'Host' : 'cn.investing.com',
-        "User-Agent" : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "User-Agent" : chrome_user_agent,
         'Accept' : 'text/plain, */*; q=0.01',
         'Accept-Language' : 'en-US,en;q=0.5',
         'Accept-Encoding' : 'gzip, deflate',
@@ -27,7 +44,8 @@ def get_index_historical_data_response(code, st_date='2020/01/01', end_date='202
         'DNT' : '1',
         'Alt-Used' : 'cn.investing.com',
         'Connection' : 'keep-alive',
-        'Referer' : 'https://cn.investing.com/indices/' + row_df['tag'].values[0] + '-historical_data',
+        # 'Referer' : '' + data_type + '/' + row_df['tag'].values[0] + '-historical_data',
+        'Referer' : referer,
         'Cookie' : 'cf_clearance=' + cc.get_cf_clearance(),
     }
 
@@ -44,25 +62,60 @@ def get_index_historical_data_response(code, st_date='2020/01/01', end_date='202
 
     url = 'https://cn.investing.com/instruments/HistoricalDataAjax'
     response = requests.post(url=url, headers=head, data=params)
-    print(response)
+    # print(response)
     return response
 
 def main():
+    from symbol_resolve import stocks_df, indices_df
     index_list = [
-            'SSEC', 'SZI', 'ftxin9', 'china50', 'HSI', 'DE30'
+            'SSEC', 'SZI', 'ftxin9', 'china-a50', 'HSI', 'DJI', 'SPX', 'FCHI', 'N225', 'KS50', 'STOXX50E'
+            ]
+    stocks_list = [
+            '600000', '600519', 'TSLA', 'BABA', '300750', '002737', '601127'
+            ]
+    commodities_list = [
+            'copper?cid=959211', 'copper', 'lead?cid=959207', 'london-cocoa', 'london-coffee', 'live-cattle', 'nickel?cid=959208', 'nickel?cid=996730', 'nickel', 'aluminum', 'aluminum?cid=996726'
             ]
 
     for symbol in index_list:
-        response = get_index_historical_data_response(symbol)
-        if response == None:
-            continue
+        response = get_symbol_historical_data_response(symbol)
         print(symbol + '...', end='')
-        if (response.status_code == 200):
+        if response == None:
+            cprint('fail')('No Such Symbol')
+            continue
+        elif (response.status_code == 200):
             cprint('ok')("OK")
         else:
             cprint('fail')(response.status_code)
         df = pd.read_html(response.text)
-        print(df)
+        print(df[0]['收盘'])
+    
+    for symbol in stocks_list:
+        response = get_symbol_historical_data_response(symbol, data_type='stocks')
+        print(symbol + '...', end='')
+        if response == None:
+            cprint('fail')('No Such Symbol')
+            continue
+        elif (response.status_code == 200):
+            cprint('ok')("OK")
+        else:
+            cprint('fail')(response.status_code)
+        df = pd.read_html(response.text)
+        print(stocks_df[stocks_df['symbol'] == symbol]['full_name'].values[0])
+        print(df[0]['收盘'])
+
+    for symbol in commodities_list:
+        response = get_symbol_historical_data_response(symbol, data_type='commodities')
+        print(symbol + '...', end='')
+        if response == None:
+            cprint('fail')('No Such Symbol')
+            continue
+        elif (response.status_code == 200):
+            cprint('ok')("OK")
+        else:
+            cprint('fail')(response.status_code)
+        df = pd.read_html(response.text)
+        print(df[0]['收盘'])
 
 if __name__ == "__main__":
     main()

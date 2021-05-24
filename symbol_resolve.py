@@ -1,9 +1,10 @@
 import pandas as pd
 
-from constant import indices_csv_path
+from constant import indices_csv_path, commodities_csv_path, stocks_csv_path
 
-# TODO: Change resources to absolute path
 indices_df = pd.read_csv(indices_csv_path)
+commodities_df = pd.read_csv(commodities_csv_path)
+stocks_df = pd.read_csv(stocks_csv_path)
 
 def contains_lower_case(s):
     assert isinstance(s, str)
@@ -12,21 +13,35 @@ def contains_lower_case(s):
             return True
     return False
 
-def get_index_row(symbol):
-    row = indices_df[indices_df['symbol'] == symbol]
+def get_symbol_row(symbol, data_type='indicies'):
+    if data_type == 'indicies':
+        cur_df = indices_df
+    elif data_type == 'stocks':
+        cur_df = stocks_df
+    else:
+        cur_df = indices_df
+
+    search_key = 'symbol'
+
+    row = cur_df[cur_df[search_key] == symbol]
     if row.empty:
         if contains_lower_case(symbol):
-            row = indices_df[indices_df['symbol'] == "".join([c.upper() for c in symbol])]
+            row = cur_df[cur_df[search_key] == "".join([c.upper() for c in symbol])]
         else:
-            row = indices_df[indices_df['symbol'] == "".join([c.lower() for c in symbol])]
+            row = cur_df[cur_df[search_key] == "".join([c.lower() for c in symbol])]
     return row
 
-def get_indices_info(lst):
-    res_dict = {}
-    for symbol in lst:
-        row = get_index_row(symbol)
-        if row.empty:
-            print("未能找到" + symbol + "请检查大小写")
-            continue
-        res_dict[symbol] = row
-    return res_dict
+def get_tag_row(tag, data_type='commodities'):
+    if data_type == 'commodities':
+        cur_df = commodities_df
+    else:
+        cur_df = commodities_df
+
+    search_key = 'tag'
+    row = cur_df[cur_df[search_key] == tag]
+    if row.empty:
+        if contains_lower_case(tag):
+            row = cur_df[cur_df[search_key] == "".join([c.upper() for c in tag])]
+        else:
+            row = cur_df[cur_df[search_key] == "".join([c.lower() for c in tag])]
+    return row

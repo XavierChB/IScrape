@@ -9,15 +9,19 @@ class ansi_color:
     UNDERLINE = '\033[4m'
 
 def cprint(theme=None):
+    '''
+    This function takes a predefined theme name and returns a lambda that prints that operates exactly like print() while displaying the theme as required.
+    '''
     start_seq = ansi_color.ENDC
     if theme == 'ok':
         start_seq = ansi_color.OKGREEN
     elif theme == 'warning':
         start_seq = (ansi_color.WARNING 
                 + ansi_color.UNDERLINE
-                + "WARNING: "
+                + "WARNING"
                 + ansi_color.ENDC
-                + ansi_color.WARNING)
+                + ansi_color.WARNING
+                + ": ")
     elif theme == 'fail':
         start_seq = (ansi_color.FAIL
                 + ansi_color.BOLD
