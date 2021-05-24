@@ -4,7 +4,7 @@ import os
 
 from datetime import datetime
 from color_print import cprint
-from constant import cf_clearance_json_path
+from constant import cf_clearance_json_path, chrome_user_agent
 
 local_json_path = cf_clearance_json_path
 full_path = os.sep.join((os.getcwd(), local_json_path))
@@ -49,7 +49,7 @@ def test_clearance(cf_clearance):
     cprint('header')("测试Cloudflare密钥连通性...", end='', flush=True)
     head = {
         "Host" : "cn.investing.com",
-        "User-Agent" : "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+        "User-Agent" : chrome_user_agent,
         "Accept" : "text/plain, */*; q=0.01",
         "Accept-Language" : "en-US,en;q=0.5",
         "Accept-Encoding" : "gzip, deflate",
