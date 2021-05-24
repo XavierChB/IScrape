@@ -1,7 +1,9 @@
 import pandas as pd
 
+from constant import indices_csv_path
+
 # TODO: Change resources to absolute path
-indices_df = pd.read_csv('resources/indices.csv')
+indices_df = pd.read_csv(indices_csv_path)
 
 def contains_lower_case(s):
     assert isinstance(s, str)

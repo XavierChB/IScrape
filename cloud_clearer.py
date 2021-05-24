@@ -4,13 +4,15 @@ import os
 
 from datetime import datetime
 from color_print import cprint
+from constant import cf_clearance_json_path
 
-local_json_path = os.sep.join(("resources", "cf_clearance.json"))
+local_json_path = cf_clearance_json_path
 full_path = os.sep.join((os.getcwd(), local_json_path))
+
+debug = False
 
 # Fix: use absolute path in windows to access files
 if os.name == 'nt':
-    local_json_path = os.sep.join(("D:", "Program Files (x86)", "Investing-Python", "Investing-Scrape", "local", "cf_clearance.json"))
     full_path = local_json_path
 
 def print_dict(dict):
@@ -86,9 +88,11 @@ def get_cf_clearance(force_reload=False):
         if ((res_dict.get('last_verified') != None
                 and datetime.now().timestamp() - res_dict.get('last_verified') < 10)
                 or test_clearance(res_dict.get('value'))):
-            print("Cloudflare密钥在有效时间内，直接输出:")
+
             res = res_dict.get('value')
-            print(res)
+            if debug:
+                print("Cloudflare密钥在有效时间内，直接输出:")
+                print(res)
             return res
 
     # If not, use undetected_chromedriver to obtain
@@ -135,7 +139,7 @@ def main():
     print(get_cf_clearance())
     cprint('header')("Test: Repeat keys")
     start_time = datetime.now().timestamp()
-    times = 10
+    times = 10000
     for _ in range(times):
         print(get_cf_clearance())
     end_time = datetime.now().timestamp()
@@ -143,8 +147,9 @@ def main():
     print(result_str)
     cprint('header')("Test: Tampered JSON")
     with open(local_json_path, 'a') as ifstream:
-        ifstream.write("hahahaha imma tamper this json like wut")
+        ifstream.write("hahahaha imma tamper this json like you know wut")
     print(get_cf_clearance())
 
 if __name__ == "__main__":
+    debug = True
     main()
