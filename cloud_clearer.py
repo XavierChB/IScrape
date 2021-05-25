@@ -99,11 +99,9 @@ def get_cf_clearance(force_reload=False):
     cprint('warning')(f"Cloudflare密钥已失效或本地存储({full_path})不存在/损坏")
     import undetected_chromedriver.v2 as uc
     from selenium.webdriver.chrome.options import Options
-    options = Options()
-    options.page_load_strategy = 'eager'
 
     print("正在创建Chrome进程...", end='', flush=True)
-    driver = uc.Chrome(options=options)
+    driver = uc.Chrome()
     cprint('ok')("OK")
 
     url = 'https://cn.investing.com'
@@ -112,6 +110,8 @@ def get_cf_clearance(force_reload=False):
         driver.get(url)
     cprint('ok')("OK")
 
+    if 'nt' in os.name:
+        time.sleep(5)
     while driver.current_url == url:
         time.sleep(1)
 

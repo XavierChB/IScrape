@@ -56,7 +56,7 @@ def get_symbol_historical_data_response(code, data_type='indices', st_date='2020
         'end_date' : end_date,
         'interval_sec' : 'Daily',
         'sort_col' : 'date',
-        'sort_ord' : 'DESC',
+        'sort_ord' : 'ASC',
         'action' : 'historical_data'
     }
 
