@@ -5,7 +5,7 @@ import cloud_clearer as cc
 
 from random import randint
 from color_print import cprint
-from constant import chrome_user_agent
+from constant import get_chrome_user_agent
 from datetime import date
 
 def get_symbol_historical_data_response(code, data_type='indices', st_date='2010/01/01', end_date=date.today().strftime('%Y/%m/%d')):
@@ -34,7 +34,7 @@ def get_symbol_historical_data_response(code, data_type='indices', st_date='2010
 
     head = {
         'Host' : 'cn.investing.com',
-        "User-Agent" : chrome_user_agent,
+        "User-Agent" : get_chrome_user_agent(),
         'Accept' : 'text/plain, */*; q=0.01',
         'Accept-Language' : 'en-US,en;q=0.5',
         'Accept-Encoding' : 'gzip, deflate',
