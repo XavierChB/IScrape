@@ -8,7 +8,7 @@ from color_print import cprint
 from constant import chrome_user_agent
 from datetime import date
 
-def get_symbol_historical_data_response(code, data_type='indices', st_date='2020/01/01', end_date=date.today().strftime('%Y/%m/%d')):
+def get_symbol_historical_data_response(code, data_type='indices', st_date='2010/01/01', end_date=date.today().strftime('%Y/%m/%d')):
     assert isinstance(code, str)
 
     if 'cid' in code:

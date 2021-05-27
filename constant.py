@@ -3,7 +3,7 @@ import pkg_resources
 
 path_prefix = '.'
 
-chrome_user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+chrome_user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"
 
 if 'nt' in os.name:
     path_prefix = os.sep.join(('D:', 'Program Files (x86)', 'Investing-Python', 'IScrape'))
