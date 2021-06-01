@@ -10,7 +10,7 @@ class ansi_color:
 
 def cprint(theme=None):
     '''
-    This function takes a predefined theme name and returns a lambda that prints that operates exactly like print() while displaying the theme as required.
+    This function takes a predefined theme name and returns a lambda prints that operates exactly like print() while displaying the theme as required.
     '''
     start_seq = ansi_color.ENDC
     if theme == 'ok':

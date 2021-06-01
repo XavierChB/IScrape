@@ -80,7 +80,6 @@ def get_cf_clearance(force_reload=False):
     Subsequent queries can set "cf_clearance=" + get_cf_clearance()
     to obtain 
     """
-    import json
     # Obtain cf_clearance history
     res_dict = get_log()
     # If last cf_clearance was obtained 50 minuts ago // test 36000
