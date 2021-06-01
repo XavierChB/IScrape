@@ -61,7 +61,10 @@ def get_result_series(symbol, data_type='indices', start='2020/01/01', end=today
     df['日期'] = df['日期'].map(chinese_date_to_datetime)
     df = df.iloc[::-1]
     df = df.set_index('日期')
-    return df['收盘']
+    res_sr = df['收盘']
+    res_sr.index = res_sr.index.map(lambda x : x.date() if isinstance(x, datetime) else x)
+    return res_sr
+
 
 def chinese_data_type_to_english(dt):
     assert isinstance(dt, str)
@@ -97,7 +100,7 @@ def get_query_results():
     symbol_list = cur_dft.columns.to_list()
     if __name__ == "__main__":
         print(type(symbol_list))
-    earlist_date = cur_dft.index.to_list()[2].date()
+    earlist_date = date.fromisoformat(cur_dft.index.to_list()[2])
     print(earlist_date)
     start_date_dict = get_start_dates(symbol_list, earlist_date)
     res_dict = {}
@@ -123,6 +126,7 @@ def update_result_df():
     for symbol in symbol_list:
         cur_sr = new_dft[symbol]
         cur_sr.index = cur_sr.index.map(lambda x : x.date() if isinstance(x, datetime) else x)
+        print(cur_sr)
         if symbol not in new_series_dict.keys():
             res_dict[symbol] = cur_sr[3:]
         elif prev_dict == None or symbol not in prev_dict:
