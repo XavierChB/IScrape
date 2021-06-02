@@ -1,11 +1,13 @@
 import datetime
 import os
+from datetime import date, datetime
+
 import pandas as pd
 
-from indices import get_symbol_historical_data_response
-from datetime import date, datetime
 from color_print import cprint
 from constant import result_state_json, result_xlsx_path
+from indices import get_symbol_historical_data_response
+
 
 def get_log():
     import json
@@ -38,6 +40,8 @@ if cur_df.index.name != '代码':
     cur_df = cur_df.set_index('代码')
 global cur_dft 
 cur_dft = cur_df.T
+if isinstance(cur_dft.index.to_list()[-1], date):
+    cur_dft = cur_dft[0:-1]
 global complete_update 
 complete_update = False
 
